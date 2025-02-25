@@ -15,6 +15,7 @@ import * as pulls from './operations/pulls.js';
 import * as branches from './operations/branches.js';
 import * as search from './operations/search.js';
 import * as commits from './operations/commits.js';
+import * as actions from './operations/actions.js';
 import {
   GitHubError,
   GitHubValidationError,
@@ -34,7 +35,30 @@ const server = new Server(
   },
   {
     capabilities: {
-      tools: {},
+      tools: {
+        triggerWorkflow: {
+          handler: actions.triggerWorkflow,
+          schema: actions.TriggerWorkflowOptionsSchema,
+          description: "Triggers a GitHub Actions workflow dispatch event"
+        },
+        listWorkflows: {
+          handler: actions.listWorkflows,
+          description: "Lists all workflows for a repository"
+        },
+        getWorkflow: {
+          handler: actions.getWorkflow,
+          description: "Gets details of a specific workflow"
+        },
+        listWorkflowRuns: {
+          handler: actions.listWorkflowRuns,
+          description: "Lists workflow runs with optional filtering by workflow id"
+        },
+        debugWorkflowRun: {
+          handler: actions.debugWorkflowRun,
+          schema: actions.DebugWorkflowRunSchema,
+          description: "Debug a failed workflow run retrieving its logs URL"
+        }
+      }
     },
   }
 );
